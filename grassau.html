@@ -1,0 +1,1242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>A.L.V.I.N. Display – Grassau</title>
+
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --gray: #777777;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--white);
+      color: var(--black);
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .frame {
+      position: relative;
+      width: 800px;
+      height: 480px;
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--black);
+    }
+
+    .header {
+      position: absolute;
+      top: 14px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .brand {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      font-size: 11px;
+      line-height: 1.1;
+      font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    .location {
+      margin: 0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .aircraft-list {
+      position: absolute;
+      top: 58px;
+      left: 20px;
+      right: 20px;
+      bottom: 34px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .aircraft {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      padding: 10px 10px 8px;
+      text-align: left;
+    }
+
+    .aircraft + .aircraft {
+      border-left: 1px solid var(--black);
+    }
+
+    .trackmap {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 132px;
+      min-height: 132px;
+      padding: 0 2px 12px;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .trackmap svg {
+      display: block;
+      width: 100%;
+      max-width: 182px;
+      max-height: 122px;
+    }
+
+    .route-block {
+      min-width: 0;
+      padding: 9px 0 8px;
+      border-bottom: 1px solid var(--black);
+    }
+
+    .aircraft-type {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+    }
+
+    .to-line {
+      margin: 4px 0 2px;
+      font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 10px;
+      line-height: 1;
+    }
+
+    .destination {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .details {
+      min-width: 0;
+      padding-top: 8px;
+    }
+
+    .detail-group {
+      padding: 0 0 7px;
+    }
+
+    .detail-group + .detail-group {
+      padding-top: 7px;
+      border-top: 1px solid var(--black);
+    }
+
+    .meta {
+      margin: 0;
+      font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 9px;
+      line-height: 1.12;
+      letter-spacing: -0.01em;
+      overflow-wrap: anywhere;
+    }
+
+    .meta + .meta {
+      margin-top: 2px;
+    }
+
+    .meta.route-meta {
+      text-transform: uppercase;
+    }
+
+    .meta.phase-meta {
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .footer {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-top: 7px;
+      border-top: 1px solid var(--black);
+      font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .empty {
+      position: absolute;
+      inset: 58px 20px 34px;
+      display: grid;
+      place-items: center;
+      font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    @media (max-width: 799px), (max-height: 479px) {
+      body {
+        place-items: start;
+      }
+
+      .frame {
+        transform-origin: top left;
+        transform: scale(0.9);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="frame">
+    <header class="header">
+      <div>
+        <p class="brand">A.L.V.I.N.</p>
+        <p class="subtitle">Aircraft Locator &amp; Visual Information Navigator</p>
+      </div>
+
+      <p class="location" aria-label="Status">☺</p>
+    </header>
+
+    <section class="aircraft-list" id="aircraftList">
+      <div class="empty">Loading aircraft...</div>
+    </section>
+
+    <footer class="footer">
+      <span>Grassau, Germany</span>
+      <span id="updatedAt">Updating</span>
+    </footer>
+  </main>
+
+  <script>
+    "use strict";
+
+    const API_BASE =
+      "https://aviradar-api.marvinradar.workers.dev";
+
+    const LOCATION = {
+      lat: 47.7756,
+      lon: 12.4550,
+      elevation: 530, // Meter über NN, ungefähre Höhe von Grassau
+      label: "HQ", // Ludwig-Thoma-Weg 6, 83224 Grassau (straßengenau,
+                   // keine hausnummerngenaue Geokodierung öffentlich verfügbar)
+    };
+
+    // Grober Horizont: Elevationswinkel (Grad), ab dem man in dieser
+    // Himmelsrichtung wegen Bergen/Gelände frei auf den Himmel blicken kann.
+    // 0° = Norden, im Uhrzeigersinn. Geschätzt anhand der Chiemgauer Alpen
+    // (Hochgern, Kampenwand, Sonntagshorn im Süden/Südwesten) vs. dem
+    // flachen Chiemsee-Becken im Norden. Bei Bedarf verfeinern, z.B. mit
+    // echten DEM-Daten oder einem Tool wie heywhatsthat.com.
+    const HORIZON_PROFILE = [
+      [0, 1], [30, 1.5], [60, 2.5], [90, 3],
+      [120, 6], [150, 10], [180, 11], [210, 9],
+      [225, 6.5], [250, 5], [270, 4], [300, 2.5],
+      [330, 1.5], [360, 1],
+    ];
+
+    const EARTH_RADIUS_M = 6371000;
+    const REFRACTION_K = 4 / 3; // atmosphärische Refraktion, Standardnäherung
+
+    // Wie weit die Track-Historie pro Flugzeug zurückreicht (Server-Endpunkt
+    // /track liefert das aus D1, gespeichert von M.A.R.V.I.N.s Ingest-Cron),
+    // und über welchen Radius sich die Mini-Karte erstreckt.
+    const TRACK_HISTORY_MINUTES = 60;
+
+    // Reine Vektor-Karte -- kein externer Kartendienst mehr. Grund: das
+    // automatisierte 15-Minuten-Screenshot-Skript sieht für Kartenanbieter
+    // wie Bot-Verkehr aus und bekommt zunehmend reduzierte/leere Kacheln
+    // ausgeliefert (Nutzungsrichtlinien-Drosselung). Reines SVG ist
+    // dagegen zu 100% zuverlässig, jedes Mal identisch.
+    const MAP_RANGE_KM = 12; // Rand über den 10-km-Ring hinaus
+
+    // Grob geschätzte Verläufe (kein Vermessungsdatensatz), zuverlässig
+    // selbst gezeichnet.
+    const ROADS = {
+      // Koordinaten aus einem vom Nutzer bereitgestellten Kartenscreenshot
+      // georeferenziert (Pixel-Positionen bekannter Ortschaften ->
+      // affine Transformation), nicht mehr frei geschätzt. Trotzdem kein
+      // Vermessungsdatensatz -- Abweichungen im Bereich weniger hundert
+      // Meter sind möglich.
+      b305: {
+        label: "B305",
+        points: [
+          [47.7935, 12.3754], [47.7801, 12.3856], [47.7740, 12.4208],
+          [47.7610, 12.4408], [47.7585, 12.4692], [47.7289, 12.4814],
+          [47.6895, 12.4865],
+        ],
+      },
+      a8: {
+        label: "A8",
+        points: [
+          [47.8105, 12.2894], [47.8286, 12.3863], [47.8465, 12.4491],
+          [47.8558, 12.4988], [47.8561, 12.5582], [47.8679, 12.6189],
+        ],
+      },
+      b307: {
+        label: "B307",
+        points: [
+          [47.7289, 12.4814], [47.7076, 12.4761], [47.6962, 12.4831],
+          [47.6784, 12.4401], [47.6555, 12.4261], [47.6172, 12.4009],
+        ],
+      },
+    };
+
+    const TOWNS = [
+      { name: "Marquartstein", abbr: "MQS", lat: 47.7167, lon: 12.5000 },
+      { name: "Staudach-Egerndach", abbr: "STA", lat: 47.7264, lon: 12.4394 },
+      { name: "Übersee", abbr: "UEB", lat: 47.8167, lon: 12.4833 },
+      { name: "Reit im Winkl", abbr: "RIW", lat: 47.6667, lon: 12.4667 },
+    ];
+
+    const MAX_AIRCRAFT = 4;
+    const REFRESH_INTERVAL_MS = 300000;
+
+    const aircraftList =
+      document.getElementById("aircraftList");
+
+    const updatedAt =
+      document.getElementById("updatedAt");
+
+    async function fetchOgnAircraft() {
+      try {
+        const response = await fetch(
+          `${API_BASE}/gliders`,
+          {
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) return [];
+
+        const data = await response.json();
+        return Array.isArray(data.aircraft)
+          ? data.aircraft
+          : [];
+      } catch (error) {
+        console.error(error);
+        return []; // OGN-Ausfall soll die restliche Anzeige nicht blockieren
+      }
+    }
+
+    function normalizeOgnAircraft(raw) {
+      if (
+        !Number.isFinite(raw.lat) ||
+        !Number.isFinite(raw.lon)
+      ) {
+        return null;
+      }
+
+      return {
+        lat: raw.lat,
+        lon: raw.lon,
+        callsign: null,
+        registration: null,
+        type: null,
+        icao24: raw.id || null,
+        trackId: raw.id || null,
+        operator: null,
+        altitude:
+          numericOrNull(raw.altitudeFt),
+        speed:
+          numericOrNull(raw.speedKt),
+        verticalRate:
+          numericOrNull(raw.climbFpm),
+        track:
+          normalizeHeading(raw.trackDeg),
+        ognAircraftType:
+          raw.aircraftType || null,
+      };
+    }
+
+    async function loadDisplay() {
+      try {
+        const [aircraftResponse, ognRaw] =
+          await Promise.all([
+            fetch(`${API_BASE}/aircraft`, {
+              headers: { Accept: "application/json" },
+              cache: "no-store",
+            }),
+            fetchOgnAircraft(),
+          ]);
+
+        if (!aircraftResponse.ok) {
+          throw new Error(
+            `Aircraft request failed with HTTP ${aircraftResponse.status}`
+          );
+        }
+
+        const payload =
+          await aircraftResponse.json();
+
+        const adsbNormalized =
+          (Array.isArray(payload.ac) ? payload.ac : [])
+            .map(normalizeAircraft)
+            .filter(Boolean);
+
+        const ognNormalized = ognRaw
+          .map(normalizeOgnAircraft)
+          .filter(Boolean);
+
+        const candidates =
+          [...adsbNormalized, ...ognNormalized]
+            // Kein Callsign-/Routen-Zwang mehr: Segelflieger, Gleitschirme
+            // und sonstiger Sichtflugverkehr haben oft weder das eine
+            // noch das andere. Nur "am Boden" wird ausgeschlossen.
+            .filter((aircraft) => aircraft.altitude !== 0)
+            .map(
+              (aircraft) => ({
+                ...aircraft,
+                distanceKm:
+                  haversineKm(
+                    LOCATION,
+                    aircraft
+                  ),
+              })
+            )
+            .filter(isVisibleFromLocation)
+            .sort(
+              (a, b) =>
+                a.distanceKm -
+                b.distanceKm
+            )
+            .slice(0, 20);
+
+        // Route-Anreicherung nur als Bonusinfo, kein Ausschlusskriterium
+        // mehr -- Flugzeuge ohne Flugplan (Segler, Gleitschirme, VFR)
+        // bleiben trotzdem in der Liste.
+        const enriched =
+          await Promise.all(
+            candidates.map(
+              enrichWithRoute
+            )
+          );
+
+        const aircraft =
+          enriched.slice(0, MAX_AIRCRAFT);
+
+        const withTracks = await Promise.all(
+          aircraft.map(async (item) => ({
+            ...item,
+            trackPoints: await fetchTrackPoints(item.icao24),
+          }))
+        );
+
+        renderAircraft(withTracks);
+
+        updatedAt.textContent =
+          `Updated ${new Date().toLocaleTimeString(
+            "en-GB",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          )}`;
+      } catch (error) {
+        console.error(error);
+
+        aircraftList.innerHTML =
+          '<div class="empty">Aircraft data unavailable.</div>';
+
+        updatedAt.textContent =
+          "Update failed";
+      }
+    }
+
+    function normalizeAircraft(raw) {
+      const lat = Number(raw.lat);
+      const lon = Number(raw.lon);
+
+      if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+      ) {
+        return null;
+      }
+
+      const callsign =
+        cleanText(raw.flight);
+
+      const registration =
+        cleanText(raw.r);
+
+      const type =
+        cleanText(raw.t);
+
+      const icao24 =
+        cleanText(raw.hex);
+
+      const operator =
+        cleanText(raw.ownOp) ||
+        airlineNameFromCallsign(callsign) ||
+        null;
+
+      const altitude =
+        raw.alt_baro === "ground"
+          ? 0
+          : numericOrNull(
+              raw.alt_baro ??
+              raw.alt_geom
+            );
+
+      // Stabile Kennung fürs Track-Log: bevorzugt ICAO24-Hexcode
+      // (ändert sich nie), sonst Callsign, sonst Registration.
+      const trackId =
+        icao24 || callsign || registration || null;
+
+      return {
+        lat,
+        lon,
+        callsign,
+        registration,
+        type,
+        operator,
+        icao24,
+        trackId,
+        altitude,
+        speed:
+          numericOrNull(raw.gs),
+        verticalRate:
+          numericOrNull(
+            raw.baro_rate ??
+            raw.geom_rate
+          ),
+        track:
+          normalizeHeading(
+            raw.track ??
+            raw.true_heading ??
+            raw.mag_heading
+          ),
+      };
+    }
+
+    async function enrichWithRoute(aircraft) {
+      if (!aircraft.callsign) {
+        return aircraft; // kein Callsign -> kein Sinn, Route abzufragen
+      }
+
+      try {
+        const response =
+          await fetch(
+            `${API_BASE}/route?callsign=${encodeURIComponent(
+              aircraft.callsign
+            )}`,
+            {
+              headers: {
+                Accept: "application/json",
+              },
+              cache: "no-store",
+            }
+          );
+
+        if (!response.ok) {
+          return aircraft;
+        }
+
+        const data =
+          await response.json();
+
+        const route =
+          data?.route || null;
+
+        if (!route) {
+          return aircraft;
+        }
+
+        const destinationCity =
+          cityOnly(
+            extractFirst(
+              route?.destination?.municipality,
+              route?.arrival?.municipality,
+              route?.destination?.name,
+              route?.arrival?.name
+            )
+          );
+
+        const originCity =
+          cityOnly(
+            extractFirst(
+              route?.origin?.municipality,
+              route?.departure?.municipality,
+              route?.origin?.name,
+              route?.departure?.name
+            )
+          );
+
+        const airline =
+          extractFirst(
+            route?.airline?.name,
+            aircraft.operator
+          );
+
+        return {
+          ...aircraft,
+          operator:
+            airline || aircraft.operator,
+          destinationCity,
+          originCity,
+        };
+      } catch (error) {
+        console.error(error);
+        return aircraft;
+      }
+    }
+
+    // ---- Track-Historie (Server, aus D1 via M.A.R.V.I.N. /track) --------
+
+    async function fetchTrackPoints(icao24) {
+      if (!icao24) return [];
+      try {
+        const response = await fetch(
+          `${API_BASE}/track?icao=${encodeURIComponent(
+            icao24.toLowerCase()
+          )}&minutes=${TRACK_HISTORY_MINUTES}`,
+          {
+            headers: { Accept: "application/json" },
+            cache: "no-store",
+          }
+        );
+        if (!response.ok) return [];
+        const data = await response.json();
+        return Array.isArray(data.points) ? data.points : [];
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    }
+
+    // ---- Mini-Karte (SVG) -------------------------------------------------
+
+    // Kleines Symbol je Flugzeugtyp statt eines reinen Punkts.
+    // Erkennt Hubschrauber grob am ADS-B-Typcode; alles andere bekommt
+    // das generische Flugzeug-Symbol, ausgerichtet nach Kurs. Sobald OGN
+    // eingebunden ist, kann item.ognAircraftType (Glider/Paraglider/...)
+    // hier direkt mit ausgewertet werden.
+    function classifyAircraftIcon(item) {
+      if (item.ognAircraftType) {
+        const map = {
+          Glider: "glider",
+          Paraglider: "paraglider",
+          Helicopter: "helicopter",
+          "Hang glider": "glider",
+        };
+        if (map[item.ognAircraftType]) {
+          return map[item.ognAircraftType];
+        }
+      }
+
+      const t = String(item.type || "").toUpperCase();
+      if (/^(H60|H64|EC35|EC45|AS35|AS50|A109|B429|R44|R66|H125|H145)/.test(t)) {
+        return "helicopter";
+      }
+
+      return "plane";
+    }
+
+    function aircraftIconSvg(category, headingDeg, x, y) {
+      const rot = Number.isFinite(headingDeg) ? headingDeg : 0;
+
+      if (category === "helicopter") {
+        return `
+          <g transform="translate(${x.toFixed(1)},${y.toFixed(1)})">
+            <circle r="6.5" fill="white" stroke="black" stroke-width="0.8" />
+            <line x1="-6" y1="0" x2="6" y2="0" stroke="black" stroke-width="1.3" />
+            <line x1="0" y1="-6" x2="0" y2="6" stroke="black" stroke-width="1.3" />
+            <circle r="1.4" fill="black" />
+          </g>
+        `;
+      }
+
+      if (category === "paraglider") {
+        return `
+          <g transform="translate(${x.toFixed(1)},${y.toFixed(1)})">
+            <circle r="6.5" fill="white" stroke="black" stroke-width="0.8" />
+            <path d="M -5 -2 Q 0 -6.5 5 -2" stroke="black" stroke-width="1.3" fill="none" />
+            <line x1="-3.5" y1="-1.2" x2="-1" y2="1.8" stroke="black" stroke-width="0.8" />
+            <line x1="3.5" y1="-1.2" x2="1" y2="1.8" stroke="black" stroke-width="0.8" />
+            <circle cy="2" r="1.5" fill="black" />
+          </g>
+        `;
+      }
+
+      if (category === "glider") {
+        return `
+          <g transform="rotate(${rot} ${x.toFixed(1)} ${y.toFixed(1)}) translate(${x.toFixed(1)},${y.toFixed(1)})">
+            <circle r="9.5" fill="white" stroke="black" stroke-width="0.8" />
+            <line x1="-8" y1="0" x2="8" y2="0" stroke="black" stroke-width="1.4" />
+            <line x1="0" y1="-1" x2="0" y2="4.5" stroke="black" stroke-width="1.2" />
+          </g>
+        `;
+      }
+
+      // Generic aircraft silhouette (fuselage + wings + tail), rotated
+      // to match current heading.
+      return `
+        <g transform="rotate(${rot} ${x.toFixed(1)} ${y.toFixed(1)}) translate(${x.toFixed(1)},${y.toFixed(1)})">
+          <circle r="8" fill="white" stroke="black" stroke-width="0.8" />
+          <path
+            d="M 0 -6 L 1.6 -1.5 L 6.5 1.8 L 1.3 1.3 L 1.7 5.8 L 0 4.2 L -1.7 5.8 L -1.3 1.3 L -6.5 1.8 L -1.6 -1.5 Z"
+            fill="black" />
+        </g>
+      `;
+    }
+
+    function renderTrackMapSvg(aircraft) {
+      const W = 182;
+      const H = 122;
+      const cx = W / 2;
+      const cy = H / 2;
+      const scale = (Math.min(W, H) / 2 - 4) / MAP_RANGE_KM;
+
+      function toXY(lat, lon) {
+        const d = haversineKm(LOCATION, { lat, lon });
+        const b = bearingDeg(LOCATION, { lat, lon });
+        const rad = radians(b);
+        const x = cx + Math.sin(rad) * d * scale;
+        const y = cy - Math.cos(rad) * d * scale;
+        return [x, y];
+      }
+
+      // Straßen enden in unseren Datenpunkten oft vor dem Kartenrand --
+      // das sieht aus, als würde die Straße einfach aufhören. Wir
+      // verlängern sie rechnerisch über den Rand hinaus, in Richtung des
+      // letzten bekannten Streckenabschnitts (reine Verlängerung der
+      // Linie, keine neue Ortskenntnis).
+      function destinationPoint(lat, lon, bearingDeg, distanceKm) {
+        const R = 6371.0088;
+        const brng = radians(bearingDeg);
+        const lat1 = radians(lat);
+        const lon1 = radians(lon);
+        const lat2 = Math.asin(
+          Math.sin(lat1) * Math.cos(distanceKm / R) +
+          Math.cos(lat1) * Math.sin(distanceKm / R) * Math.cos(brng)
+        );
+        const lon2 = lon1 + Math.atan2(
+          Math.sin(brng) * Math.sin(distanceKm / R) * Math.cos(lat1),
+          Math.cos(distanceKm / R) - Math.sin(lat1) * Math.sin(lat2)
+        );
+        return [lat2 * 180 / Math.PI, lon2 * 180 / Math.PI];
+      }
+
+      function extendRoadPoints(points) {
+        if (points.length < 2) return points;
+        const extendKm = MAP_RANGE_KM * 2; // sicher über den Rand hinaus
+
+        const [lat0, lon0] = points[0];
+        const [lat1, lon1] = points[1];
+        const startBearing = (bearingDeg(
+          { lat: lat1, lon: lon1 },
+          { lat: lat0, lon: lon0 }
+        ));
+        const extendedStart = destinationPoint(lat0, lon0, startBearing, extendKm);
+
+        const [latN1, lonN1] = points[points.length - 2];
+        const [latN, lonN] = points[points.length - 1];
+        const endBearing = bearingDeg(
+          { lat: latN1, lon: lonN1 },
+          { lat: latN, lon: lonN }
+        );
+        const extendedEnd = destinationPoint(latN, lonN, endBearing, extendKm);
+
+        return [extendedStart, ...points, extendedEnd];
+      }
+
+      function pathFor(points) {
+        return points.map(([lat, lon]) => toXY(lat, lon));
+      }
+
+      function pointsAttr(xy) {
+        return xy.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
+      }
+
+      // Straßen: durchgezogen, dick, MIT Namens-Label direkt an der
+      // Linie -- eine unbeschriftete Linie ist auf einer Karte bedeutungslos.
+      function roadWithLabel(road, dashed) {
+        const xy = pathFor(extendRoadPoints(road.points));
+        const realXy = pathFor(road.points); // für Label-Platzierung
+        if (!xy.length) return "";
+        const visible = realXy.filter(([x, y]) => x >= 4 && x <= W - 4 && y >= 4 && y <= H - 4);
+        const labelPoint = visible[Math.floor(visible.length / 2)] || realXy[Math.floor(realXy.length / 2)];
+
+        return `
+          <polyline points="${pointsAttr(xy)}" fill="none" stroke="black"
+            stroke-width="1" ${dashed ? 'stroke-dasharray="4,1.6"' : ""} />
+          <rect x="${(labelPoint[0] - 9).toFixed(1)}" y="${(labelPoint[1] - 8).toFixed(1)}"
+            width="18" height="6.5" fill="white" />
+          <text x="${labelPoint[0].toFixed(1)}" y="${(labelPoint[1] - 3).toFixed(1)}"
+            font-size="6" font-family="monospace" font-weight="bold"
+            text-anchor="middle" fill="black">${road.label}</text>
+        `;
+      }
+
+      const roads =
+        roadWithLabel(ROADS.b305, false) +
+        roadWithLabel(ROADS.a8, true) +
+        roadWithLabel(ROADS.b307, false);
+
+      // Orte: volle Namen (abgekürzt wo nötig), klar lesbar.
+      const townMarkers = TOWNS.map((town) => {
+        const [x, y] = toXY(town.lat, town.lon);
+        if (x < -4 || x > W + 4 || y < -4 || y > H + 4) return "";
+        return `
+          <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.3" fill="black" />
+          <rect x="${(x + 2).toFixed(1)}" y="${(y - 5.5).toFixed(1)}"
+            width="${town.abbr.length * 3.6 + 2}" height="6" fill="white" />
+          <text x="${(x + 3).toFixed(1)}" y="${(y - 1).toFixed(1)}"
+            font-size="5.5" font-family="monospace" fill="black">${town.abbr}</text>
+        `;
+      }).join("");
+
+      // Distanzringe: dünn und gepunktet (bewusst schwächer als
+      // Straßen), MIT km-Beschriftung direkt am Ring.
+      const rings = [5, 10].map((km) => {
+        const r = km * scale;
+        return `
+          <circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}"
+            fill="none" stroke="black" stroke-width="0.4" stroke-dasharray="1,2.2" />
+          <rect x="${(cx + 1).toFixed(1)}" y="${(cy - r - 6).toFixed(1)}"
+            width="16" height="6" fill="white" />
+          <text x="${(cx + 2).toFixed(1)}" y="${(cy - r - 1.5).toFixed(1)}"
+            font-size="5" font-family="monospace" fill="black">${km} KM</text>
+        `;
+      }).join("");
+
+      // Grassau selbst: großer Punkt MIT Namen, eindeutig als "hier"
+      // erkennbar.
+      const homeLabel = `
+        <circle cx="${cx}" cy="${cy}" r="2.2" fill="black" />
+        <rect x="${(cx + 3).toFixed(1)}" y="${(cy + 1).toFixed(1)}"
+          width="30" height="6.5" fill="white" />
+        <text x="${(cx + 4).toFixed(1)}" y="${(cy + 6).toFixed(1)}"
+          font-size="6" font-family="monospace" font-weight="bold"
+          fill="black">GRASSAU</text>
+      `;
+
+      // Nordpfeil oben links -- macht die Orientierung auf einen Blick
+      // klar, auch ohne es vorher zu wissen.
+      const northArrow = `
+        <g transform="translate(10,10)">
+          <line x1="0" y1="7" x2="0" y2="-4" stroke="black" stroke-width="1.1" />
+          <path d="M -2.2 -1.5 L 0 -5.5 L 2.2 -1.5 Z" fill="black" />
+          <text x="0" y="14" font-size="6" font-family="monospace"
+            text-anchor="middle" fill="black">N</text>
+        </g>
+      `;
+
+      const points = aircraft.trackPoints || [];
+      const trailXY = points.map((p) => toXY(p.lat, p.lon));
+      const [curX, curY] = toXY(aircraft.lat, aircraft.lon);
+
+      const trailPointsAttr = trailXY
+        .map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`)
+        .join(" ");
+
+      const trail =
+        trailXY.length > 1
+          ? `<polyline points="${trailPointsAttr}" fill="none" stroke="black" stroke-width="1.3" stroke-linejoin="round" />`
+          : "";
+
+      const dots = trailXY
+        .slice(0, -1)
+        .map(
+          ([x, y]) =>
+            `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1" fill="black" />`
+        )
+        .join("");
+
+      return `
+        <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+          ${rings}
+          ${roads}
+          ${townMarkers}
+          ${homeLabel}
+          ${northArrow}
+
+          ${trail}
+          ${dots}
+
+          ${aircraftIconSvg(
+            classifyAircraftIcon(aircraft),
+            aircraft.track,
+            curX,
+            curY
+          )}
+        </svg>
+      `;
+    }
+
+    function renderAircraft(aircraft) {
+      if (!aircraft.length) {
+        aircraftList.innerHTML =
+          '<div class="empty">No aircraft, gliders or paragliders visible from Grassau right now.</div>';
+        return;
+      }
+
+      aircraftList.innerHTML =
+        aircraft
+          .map(
+            (item) => {
+              const flightLine =
+                [
+                  item.operator,
+                  item.registration || item.callsign,
+                ]
+                  .filter(Boolean)
+                  .join(" · ") ||
+                item.ognAircraftType ||
+                (item.type ? "VFR TRAFFIC" : "UNIDENTIFIED");
+
+              const altitudeMeters =
+                item.altitude !== null
+                  ? Math.round(item.altitude * 0.3048)
+                  : null;
+
+              const speedKmh =
+                item.speed !== null
+                  ? Math.round(item.speed * 1.852)
+                  : null;
+
+              const distanceFromHQ =
+                item.distanceKm !== null
+                  ? `${formatNumber(Math.round(item.distanceKm))} km from HQ`
+                  : null;
+
+              const flightPhase =
+                deriveFlightPhase(
+                  altitudeMeters,
+                  item.verticalRate
+                );
+
+              return `
+                <article class="aircraft">
+                  <div class="trackmap">
+                    ${renderTrackMapSvg(item)}
+                  </div>
+
+                  <div class="route-block">
+                    <p class="aircraft-type">
+                      ${escapeHtml(
+                        item.ognAircraftType ||
+                          expandAircraftType(item.type)
+                      )}
+                    </p>
+                    <p class="to-line">ALT</p>
+                    <p class="destination">
+                      ${altitudeMeters !== null ? `${escapeHtml(formatNumber(altitudeMeters))} m` : "—"}
+                    </p>
+                  </div>
+
+                  <div class="details">
+                    <div class="detail-group">
+                      <p class="meta"><strong>${distanceFromHQ ? escapeHtml(distanceFromHQ) : "Distance unknown"}</strong></p>
+                    </div>
+
+                    <div class="detail-group">
+                      <p class="meta">${escapeHtml(flightLine)}</p>
+                    </div>
+
+                    <div class="detail-group">
+                      ${speedKmh !== null ? `<p class="meta">${escapeHtml(formatNumber(speedKmh))} km/h</p>` : ''}
+                      <p class="meta">${escapeHtml(`${Math.round(item.track)}°`)}</p>
+                    </div>
+
+                    <div class="detail-group">
+                      <p class="meta phase-meta">${escapeHtml(flightPhase)}</p>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }
+          )
+          .join("");
+    }
+
+    function expandAircraftType(code) {
+      const map = {
+        A318: "Airbus A318-100",
+        A319: "Airbus A319-100",
+        A320: "Airbus A320-200",
+        A321: "Airbus A321-100/200",
+        A20N: "Airbus A320neo",
+        A21N: "Airbus A321neo",
+        A332: "Airbus A330-200",
+        A333: "Airbus A330-300",
+        A339: "Airbus A330-900neo",
+        A359: "Airbus A350-900",
+        A35K: "Airbus A350-1000",
+        A388: "Airbus A380-800",
+        B737: "Boeing 737-700",
+        B738: "Boeing 737-800",
+        B739: "Boeing 737-900",
+        B38M: "Boeing 737 MAX 8",
+        B39M: "Boeing 737 MAX 9",
+        B744: "Boeing 747-400",
+        B748: "Boeing 747-8",
+        B752: "Boeing 757-200",
+        B763: "Boeing 767-300",
+        B772: "Boeing 777-200",
+        B773: "Boeing 777-300",
+        B77W: "Boeing 777-300ER",
+        B788: "Boeing 787-8",
+        B789: "Boeing 787-9",
+        B78X: "Boeing 787-10",
+        E190: "Embraer 190",
+        E195: "Embraer 195",
+        E290: "Embraer E190-E2",
+        E295: "Embraer E195-E2",
+        CRJ9: "Bombardier CRJ900",
+        AT76: "ATR 72-600",
+        DH8D: "De Havilland Dash 8-Q400",
+        GLID: "Glider",
+        PARA: "Paraglider",
+        ULAC: "Ultralight",
+      };
+
+      const normalized =
+        String(code || "")
+          .trim()
+          .toUpperCase();
+
+      return map[normalized] ||
+        normalized ||
+        "Unknown aircraft";
+    }
+
+    function deriveFlightPhase(altitudeMeters, verticalRateFpm) {
+      if (verticalRateFpm !== null) {
+        if (verticalRateFpm > 300) {
+          return "CLIMB";
+        }
+
+        if (verticalRateFpm < -300) {
+          return "DESCENT";
+        }
+      }
+
+      return "LEVEL";
+    }
+
+    function toUpperText(value) {
+      return value
+        ? String(value).toUpperCase()
+        : null;
+    }
+
+    function cityOnly(value) {
+      if (!value) {
+        return null;
+      }
+
+      const text =
+        String(value)
+          .trim()
+          .replace(/\s+International Airport$/i, "")
+          .replace(/\s+Airport$/i, "")
+          .replace(/\s+International$/i, "")
+          .trim();
+
+      return text.includes(",")
+        ? text.split(",")[0].trim()
+        : text;
+    }
+
+    function airlineIcaoFromCallsign(callsign) {
+      const match =
+        String(callsign || "")
+          .trim()
+          .toUpperCase()
+          .match(/^([A-Z]{3})\d/);
+
+      return match
+        ? match[1]
+        : null;
+    }
+
+    function airlineNameFromCallsign(callsign) {
+      const map = {
+        DLH: "Lufthansa",
+        BAW: "British Airways",
+        AFR: "Air France",
+        KLM: "KLM",
+        UAE: "Emirates",
+        QTR: "Qatar Airways",
+        THY: "Turkish Airlines",
+        SAS: "Scandinavian Airlines",
+        AUA: "Austrian Airlines",
+        SWR: "Swiss",
+        EIN: "Aer Lingus",
+        VLG: "Vueling",
+        RYR: "Ryanair",
+        EJU: "easyJet Europe",
+        EZY: "easyJet",
+        TUI: "TUI fly",
+      };
+
+      const icao =
+        airlineIcaoFromCallsign(callsign);
+
+      return icao
+        ? map[icao] || icao
+        : null;
+    }
+
+    function extractFirst(...values) {
+      for (const value of values) {
+        if (
+          value !== null &&
+          value !== undefined &&
+          String(value).trim() !== ""
+        ) {
+          return String(value).trim();
+        }
+      }
+
+      return null;
+    }
+
+    function cleanText(value) {
+      const text =
+        String(value ?? "")
+          .trim()
+          .toUpperCase();
+
+      return text || null;
+    }
+
+    function numericOrNull(value) {
+      const number = Number(value);
+      return Number.isFinite(number)
+        ? number
+        : null;
+    }
+
+    function normalizeHeading(value) {
+      const number = Number(value);
+      return Number.isFinite(number)
+        ? ((number % 360) + 360) % 360
+        : 0;
+    }
+
+    function bearingDeg(from, to) {
+      const lat1 = radians(from.lat);
+      const lat2 = radians(to.lat);
+      const deltaLon = radians(to.lon - from.lon);
+      const y = Math.sin(deltaLon) * Math.cos(lat2);
+      const x =
+        Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+      return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    function horizonAngleAt(bearing) {
+      for (let i = 0; i < HORIZON_PROFILE.length - 1; i++) {
+        const [b1, a1] = HORIZON_PROFILE[i];
+        const [b2, a2] = HORIZON_PROFILE[i + 1];
+        if (bearing >= b1 && bearing <= b2) {
+          const ratio = (bearing - b1) / (b2 - b1);
+          return a1 + (a2 - a1) * ratio;
+        }
+      }
+      return 2; // Fallback
+    }
+
+    function isVisibleFromLocation(aircraft) {
+      if (aircraft.altitude === null || aircraft.distanceKm === null) {
+        return true; // ohne Daten lieber nicht rausfiltern
+      }
+      const altitudeM = aircraft.altitude * 0.3048;
+      const distanceM = aircraft.distanceKm * 1000;
+      if (distanceM < 200) {
+        return true; // quasi direkt über einem, Horizontfrage irrelevant
+      }
+      const curvatureDropM =
+        (distanceM * distanceM) / (2 * EARTH_RADIUS_M * REFRACTION_K);
+      const effectiveHeightM = altitudeM - LOCATION.elevation - curvatureDropM;
+      const elevationAngleDeg =
+        Math.atan2(effectiveHeightM, distanceM) * 180 / Math.PI;
+
+      const bearing = bearingDeg(LOCATION, aircraft);
+      return elevationAngleDeg > horizonAngleAt(bearing);
+    }
+
+    function haversineKm(a, b) {
+      const earthRadiusKm = 6371.0088;
+      const deltaLat = radians(b.lat - a.lat);
+      const deltaLon = radians(b.lon - a.lon);
+      const latitudeA = radians(a.lat);
+      const latitudeB = radians(b.lat);
+
+      const value =
+        Math.sin(deltaLat / 2) ** 2 +
+        Math.cos(latitudeA) *
+        Math.cos(latitudeB) *
+        Math.sin(deltaLon / 2) ** 2;
+
+      return 2 * earthRadiusKm * Math.asin(Math.sqrt(value));
+    }
+
+    function radians(value) {
+      return value * Math.PI / 180;
+    }
+
+    function formatNumber(value) {
+      return Math.round(value).toLocaleString("en-US");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    loadDisplay();
+    setInterval(loadDisplay, REFRESH_INTERVAL_MS);
+  </script>
+</body>
+</html>

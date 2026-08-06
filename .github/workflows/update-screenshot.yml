@@ -1,0 +1,86 @@
+name: Update E-Ink Screenshot
+
+on:
+  schedule:
+    # Alle 15 Minuten, nur tagsüber (7-23 Uhr MEZ = 6-22 Uhr UTC im Winter,
+    # 5-21 Uhr UTC im Sommer -- großzügig 5-22 UTC gewählt, damit es das
+    # ganze Jahr über passt; nachts spart GitHub Actions dann automatisch)
+    - cron: "*/15 5-22 * * *"
+  workflow_dispatch: {}   # erlaubt manuelles Auslösen zum Testen
+
+permissions:
+  contents: write
+
+jobs:
+  screenshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Dependencies installieren
+        run: |
+          pip install playwright pillow
+          playwright install --with-deps chromium
+
+      - name: Screenshot erstellen und in 1-Bit BMP wandeln
+        env:
+          TARGET_URL: "https://avitracker.github.io/A.L.V.I.N./display.html"
+        run: |
+          python3 << 'EOF'
+          import os
+          from playwright.sync_api import sync_playwright
+          from PIL import Image
+
+          url = os.environ["TARGET_URL"]
+          WIDTH, HEIGHT = 800, 480
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch()
+              page = browser.new_page(viewport={"width": WIDTH, "height": HEIGHT})
+              page.goto(url, wait_until="networkidle", timeout=30000)
+              try:
+                  page.wait_for_function(
+                      """() => {
+                          const el = document.getElementById('aircraftList');
+                          return el && !el.textContent.includes('Loading aircraft');
+                      }""",
+                      timeout=10000,
+                  )
+              except Exception:
+                  pass
+              page.screenshot(path="raw.png")
+              browser.close()
+
+          img = Image.open("raw.png").convert("L").resize((WIDTH, HEIGHT))
+          # Harter Schwellwert statt Dithering: hält Text/Linien scharf.
+          # Threshold bei Bedarf anpassen (niedriger = mehr wird schwarz).
+          THRESHOLD = 180
+          img = img.point(lambda p: 255 if p > THRESHOLD else 0).convert("1")
+          img.save("screen.bmp")
+          EOF
+
+      - name: Bild committen (amend nur auf eigene Commits, kein Anfassen des Workflow-Commits)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add screen.bmp
+
+          if git diff --quiet --cached; then
+            echo "Kein Bildupdate, nichts zu committen."
+          elif [ "$(git log -1 --pretty=%s)" = "Update e-ink screenshot" ]; then
+            # Der letzte Commit war schon ein eigener Screenshot-Commit ->
+            # sicher zu amenden, enthält garantiert keine Workflow-Datei.
+            git commit --amend --no-edit
+            git push --force
+          else
+            # Erster Lauf (oder der letzte Commit war ein manueller/anderer
+            # Commit, ggf. mit Workflow-Dateien) -> normaler neuer Commit.
+            git commit -m "Update e-ink screenshot"
+            git push
+          fi
