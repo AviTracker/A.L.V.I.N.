@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f7">
+<title>A.L.V.I.N.</title>
+<style>
+:root{
+  --bg:#f7f7f7;
+  --surface:#ffffff;
+  --text:#183032;
+  --muted:#858d89;
+  --line:#d9ddda;
+  --soft:#eef0ee;
+  --ok:#6ba34a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:26px 16px 40px}
+button,input{font:inherit}
+main{width:min(100%,620px);margin:auto}
+header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;margin-bottom:18px}
+h1{margin:0;font-size:17px;letter-spacing:.18em}
+.subtitle{margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.status{display:flex;align-items:center;gap:7px;padding-top:2px;color:var(--muted);font-size:12px}.status-dot{width:7px;height:7px;border-radius:50%;background:#a7ada9}.status.live .status-dot{background:var(--ok)}
+.location{margin-bottom:22px}.location-toggle{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:0;border-radius:10px;background:#eceeed;color:var(--text);cursor:pointer;font-size:12px;font-weight:700}.location-toggle svg{width:15px;height:15px;flex:0 0 auto}.address-panel{display:none;margin-top:10px}.address-panel.open{display:block}.address-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.address-input{min-width:0;padding:11px 12px;border:1px solid var(--line);border-radius:10px;outline:none;background:var(--surface);color:var(--text);font-size:12px}.address-input:focus{border-color:var(--text)}.address-submit{padding:11px 14px;border:1px solid var(--text);border-radius:10px;background:var(--text);color:#fff;cursor:pointer;font-size:12px;font-weight:700}.address-message{min-height:16px;margin:6px 1px 0;color:var(--muted);font-size:11px}
+.radar-wrap{width:100%;aspect-ratio:1;margin-bottom:24px}svg{width:100%;height:100%;overflow:visible}.ring,.axis{stroke:var(--line);stroke-width:1}.ring{fill:none}.north{fill:var(--muted);font-size:11px;text-anchor:middle}.center{fill:var(--text)}.aircraft path{fill:var(--text)}.aircraft text{fill:var(--text);font-size:9px;font-weight:700;text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:3px}
+.aircraft-list{border-top:1px solid var(--line)}.aircraft-card{border-bottom:1px solid var(--line)}
+.aircraft-summary{width:100%;display:grid;grid-template-columns:52px minmax(0,1fr) auto 18px;gap:12px;align-items:center;padding:15px 0;border:0;background:transparent;color:inherit;text-align:left;cursor:pointer}.tail{display:grid;place-items:center;width:52px;height:40px}.tail img{display:block;max-width:48px;max-height:36px;object-fit:contain;filter:drop-shadow(.5px 0 0 rgba(0,0,0,.25)) drop-shadow(-.5px 0 0 rgba(0,0,0,.25)) drop-shadow(0 .5px 0 rgba(0,0,0,.25)) drop-shadow(0 -.5px 0 rgba(0,0,0,.25))}.tail-fallback{color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.08em}
+.aircraft-name{margin:0 0 4px;overflow:hidden;font-size:15px;font-weight:700;text-overflow:ellipsis;white-space:nowrap}
+.aircraft-meta{margin:0;overflow:hidden;color:var(--muted);font-size:12px;line-height:1.4;text-overflow:ellipsis;white-space:nowrap}
+.distance{font-size:13px;font-weight:700;white-space:nowrap}.chevron{width:16px;height:16px;transition:transform .18s ease}.aircraft-card.open .chevron{transform:rotate(180deg)}
+.aircraft-details{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .22s ease,opacity .16s ease}.aircraft-card.open .aircraft-details{grid-template-rows:1fr;opacity:1}.aircraft-details-inner{overflow:hidden}.details-content{padding:0 0 18px 64px}
+.detail-section+.detail-section{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.detail-hero{margin:0;color:var(--text);font-size:13px;font-weight:700;line-height:1.35;text-transform:uppercase;letter-spacing:.02em}
+.detail-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.detail-grid.secondary{grid-template-columns:repeat(2,minmax(0,1fr))}
+.detail-item{min-height:64px;padding:10px;border-radius:10px;background:var(--soft)}.detail-label{display:block;margin-bottom:5px;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.detail-value{display:block;overflow-wrap:anywhere;font-size:13px;font-weight:700;line-height:1.35}
+.detail-line{margin:0;color:var(--text);font-size:13px;font-weight:700;line-height:1.45}.detail-line+.detail-line{margin-top:3px}
+.detail-caption{margin:8px 0 0;color:var(--muted);font-size:11px;line-height:1.55}
+.empty{padding:28px 0;color:var(--muted);font-size:13px;text-align:center}
+@media(max-width:430px){
+  .aircraft-summary{grid-template-columns:44px minmax(0,1fr) auto 16px;gap:10px}
+  .tail{width:44px}
+  .tail img{max-width:40px;max-height:32px}
+  .details-content{padding-left:54px}
+  .detail-grid{grid-template-columns:1fr}
+  .detail-grid.secondary{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <h1>A.L.V.I.N.</h1>
+    <p class="subtitle">Aircraft Locator &amp; Visual Information Navigator</p>
+  </div>
+  <div class="status" id="status"><span class="status-dot"></span><span id="statusText">Connecting</span></div>
+</header>
+
+<section class="location">
+  <button class="location-toggle" id="locationToggle" type="button" aria-expanded="false" aria-controls="addressPanel">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z"></path><circle cx="12" cy="10" r="2.2"></circle></svg>
+    <span id="locationButtonLabel">HQ</span>
+  </button>
+  <div class="address-panel" id="addressPanel">
+    <form class="address-form" id="addressForm">
+      <input class="address-input" id="addressInput" type="search" placeholder="Enter an address" autocomplete="street-address" aria-label="Address">
+      <button class="address-submit" type="submit">Set</button>
+    </form>
+    <p class="address-message" id="addressMessage">HQ</p>
+  </div>
+</section>
+
+<div class="radar-wrap">
+  <svg viewBox="0 0 600 600" aria-label="Nearest aircraft">
+    <circle class="ring" cx="300" cy="300" r="270"></circle>
+    <circle class="ring" cx="300" cy="300" r="180"></circle>
+    <circle class="ring" cx="300" cy="300" r="90"></circle>
+    <line class="axis" x1="300" y1="30" x2="300" y2="42"></line>
+    <line class="axis" x1="300" y1="558" x2="300" y2="570"></line>
+    <line class="axis" x1="30" y1="300" x2="42" y2="300"></line>
+    <line class="axis" x1="558" y1="300" x2="570" y2="300"></line>
+    <text class="north" x="300" y="20">N</text>
+    <g id="aircraftLayer"></g>
+    <circle class="center" cx="300" cy="300" r="5"></circle>
+  </svg>
+</div>
+
+<div class="aircraft-list" id="aircraftList"><div class="empty">Loading aircraft…</div></div>
+</main>
+
+<script>
+"use strict";
+const API_BASE="https://aviradar-api.marvinradar.workers.dev";
+const DEFAULT_LOCATION={lat:48.1547,lon:11.5074,label:"HQ"};
+const MAX_AIRCRAFT=5,REFRESH_INTERVAL_MS=60000,RADAR_MAX_RADIUS=255,LOCATION_STORAGE_KEY="alvin-location";
+const state={center:{lat:DEFAULT_LOCATION.lat,lon:DEFAULT_LOCATION.lon},locationLabel:DEFAULT_LOCATION.label,aircraft:[],openAircraftIcao:null};
+const statusElement=document.getElementById("status"),statusTextElement=document.getElementById("statusText"),aircraftLayer=document.getElementById("aircraftLayer"),aircraftList=document.getElementById("aircraftList"),locationToggle=document.getElementById("locationToggle"),locationButtonLabel=document.getElementById("locationButtonLabel"),addressPanel=document.getElementById("addressPanel"),addressForm=document.getElementById("addressForm"),addressInput=document.getElementById("addressInput"),addressMessage=document.getElementById("addressMessage");
+
+function setStatus(live,text){statusElement.classList.toggle("live",live);statusTextElement.textContent=text}
+function setLocation(lat,lon,label,persist=true){state.center={lat:Number(lat),lon:Number(lon)};state.locationLabel=label;locationButtonLabel.textContent=label;addressMessage.textContent=label;if(persist)localStorage.setItem(LOCATION_STORAGE_KEY,JSON.stringify({lat:state.center.lat,lon:state.center.lon,label}));loadAircraft()}
+function restoreLocation(){try{const s=JSON.parse(localStorage.getItem(LOCATION_STORAGE_KEY));if(s&&Number.isFinite(Number(s.lat))&&Number.isFinite(Number(s.lon))&&s.label){const isHQ=Math.abs(Number(s.lat)-DEFAULT_LOCATION.lat)<0.0005&&Math.abs(Number(s.lon)-DEFAULT_LOCATION.lon)<0.0005;const label=isHQ?"HQ":s.label;state.center={lat:Number(s.lat),lon:Number(s.lon)};state.locationLabel=label;locationButtonLabel.textContent=label;addressMessage.textContent=label;if(isHQ)localStorage.setItem(LOCATION_STORAGE_KEY,JSON.stringify({lat:DEFAULT_LOCATION.lat,lon:DEFAULT_LOCATION.lon,label:"HQ"}))}}catch{localStorage.removeItem(LOCATION_STORAGE_KEY)}}
+async function geocodeAddress(address){const u=new URL("https://nominatim.openstreetmap.org/search");u.searchParams.set("q",address);u.searchParams.set("format","jsonv2");u.searchParams.set("limit","1");u.searchParams.set("countrycodes","de");const r=await fetch(u,{headers:{Accept:"application/json"}});if(!r.ok)throw new Error(`Address lookup failed with HTTP ${r.status}`);const j=await r.json();if(!Array.isArray(j)||!j.length)return null;return{lat:Number(j[0].lat),lon:Number(j[0].lon),label:j[0].display_name||address}}
+
+async function loadAircraft(){
+  try{
+    setStatus(false,"Updating");
+    const r=await fetch(`${API_BASE}/aircraft`,{headers:{Accept:"application/json"},cache:"no-store"});
+    if(!r.ok)throw new Error(`Aircraft request failed with HTTP ${r.status}`);
+    const p=await r.json();
+    const normalized=(Array.isArray(p.ac)?p.ac:[])
+      .map(normalizeAircraft)
+      .filter(Boolean)
+      .filter(item=>item.altitude!==0)
+      .map(item=>({
+        ...item,
+        distanceKm:haversineKm(state.center,item),
+        bearing:bearing(state.center,item)
+      }))
+      .sort((a,b)=>a.distanceKm-b.distanceKm)
+      .slice(0,MAX_AIRCRAFT);
+    state.aircraft=await Promise.all(normalized.map(enrichWithRoute));
+    setStatus(true,"Live");
+    render();
+  }catch(e){
+    console.error(e);
+    setStatus(false,"Unavailable");
+    if(!state.aircraft.length){aircraftLayer.innerHTML="";aircraftList.innerHTML='<div class="empty">Aircraft data unavailable.</div>'}
+  }
+}
+
+function normalizeAircraft(raw){const lat=Number(raw.lat),lon=Number(raw.lon);if(!Number.isFinite(lat)||!Number.isFinite(lon))return null;const callsign=cleanText(raw.flight),registration=cleanText(raw.r),type=cleanText(raw.t),operator=cleanText(raw.ownOp)||callsign||registration||type||"Unknown aircraft";return{icao:cleanText(raw.hex)?.replace(/^~/,"")||`${lat}-${lon}`,lat,lon,callsign,registration,type,operator,altitude:raw.alt_baro==="ground"?0:numericOrNull(raw.alt_baro??raw.alt_geom),speed:numericOrNull(raw.gs),track:normalizeHeading(raw.track??raw.true_heading??raw.mag_heading),verticalRate:numericOrNull(raw.baro_rate??raw.geom_rate)}}
+
+async function enrichWithRoute(aircraft){
+  try{
+    if(!aircraft.callsign)return aircraft;
+    const response=await fetch(`${API_BASE}/route?callsign=${encodeURIComponent(aircraft.callsign)}`,{headers:{Accept:"application/json"},cache:"no-store"});
+    if(!response.ok)return aircraft;
+    const data=await response.json();
+    const route=data?.route||null;
+    if(!route)return aircraft;
+    const destinationCity=cityOnly(extractFirst(route?.destination?.municipality,route?.arrival?.municipality,route?.destination?.name,route?.arrival?.name));
+    const originCity=cityOnly(extractFirst(route?.origin?.municipality,route?.departure?.municipality,route?.origin?.name,route?.departure?.name));
+    const airline=extractFirst(route?.airline?.name,aircraft.operator);
+    const remainingDistanceKm=computeRemainingDistanceKm(aircraft,route);
+    return {...aircraft,operator:airline||aircraft.operator,destinationCity,originCity,remainingDistanceKm};
+  }catch(error){console.error(error);return aircraft}
+}
+
+function render(){renderRadar();renderAircraftList();bindAircraftToggles()}
+function getNearestAircraft(){return state.aircraft.slice(0,MAX_AIRCRAFT)}
+
+function renderRadar(){
+  aircraftLayer.innerHTML="";
+  getNearestAircraft().forEach(item=>{
+    const dist=Math.min(item.distanceKm,RADAR_MAX_RADIUS),radius=(dist/RADAR_MAX_RADIUS)*270,angle=radians(item.bearing-90),x=300+Math.cos(angle)*radius,y=300+Math.sin(angle)*radius;
+    const g=svgEl("g",{class:"aircraft"});
+    const icon=svgEl("path",{d:"M0 -9 L3 -1.5 L9 -1.5 L10.5 0 L9 1.5 L3 1.5 L0 9 L-1.7 9 L-1.2 1.5 L-8 1.5 L-9.5 0 L-8 -1.5 L-1.2 -1.5 L-1.7 -9 Z",transform:`translate(${x} ${y}) rotate(${Math.round(item.track)}) scale(1.2)`});
+    const label=svgEl("text",{x:x,y:y+18}); label.textContent=shortLabel(item);
+    g.append(icon,label); aircraftLayer.append(g);
+  })
+}
+
+function renderAircraftList(){
+  const aircraft=getNearestAircraft();
+  if(!aircraft.length){aircraftList.innerHTML='<div class="empty">No airborne aircraft nearby.</div>';return}
+  aircraftList.innerHTML=aircraft.map(item=>{
+    const open=state.openAircraftIcao===item.icao;
+    const code=airlineIcaoFromCallsign(item.callsign);
+    const tailUrl=code?`${API_BASE}/airline-logo?icao=${encodeURIComponent(code)}&variant=tail`:null;
+    const distanceLabel=`${Math.round(item.distanceKm)} km`;
+    const name=expandAircraftType(item.type);
+    const meta=[item.destinationCity?`to ${item.destinationCity}`:null,item.registration,item.operator].filter(Boolean).join(" · ");
+    const routeSummary=[toUpperText(item.originCity),toUpperText(item.destinationCity)].filter(Boolean).join(" → ")||"Route unavailable";
+    const altitudeMeters=item.altitude!==null?Math.round(item.altitude*0.3048):null;
+    const speedKmh=item.speed!==null?Math.round(item.speed*1.852):null;
+    const flightPhase=deriveFlightPhase(altitudeMeters,item.verticalRate,item.remainingDistanceKm);
+    const distanceToDestination=item.remainingDistanceKm!==null?`${formatNumber(Math.round(item.remainingDistanceKm))} km to destination`:"Destination distance unavailable";
+    const distanceFromHQ=`${formatNumber(Math.round(item.distanceKm))} km from HQ`;
+    const identityLine=[item.operator,item.registration].filter(Boolean).join(" · ")||"Unknown aircraft";
+    return `<article class="aircraft-card ${open?"open":""}">
+      <button class="aircraft-summary" type="button" data-aircraft-toggle="${escapeHtml(item.icao)}" aria-expanded="${open?"true":"false"}">
+        ${renderTail(tailUrl,code)}
+        <div>
+          <p class="aircraft-name">${escapeHtml(name)}</p>
+          <p class="aircraft-meta">${escapeHtml(meta||"Route metadata loading")}</p>
+        </div>
+        <div class="distance">${escapeHtml(distanceLabel)}</div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+      </button>
+      <div class="aircraft-details">
+        <div class="aircraft-details-inner">
+          <div class="details-content">
+            <div class="detail-section">
+              <p class="detail-line"><strong>${escapeHtml(identityLine)}</strong></p>
+            </div>
+            <div class="detail-section">
+              <p class="detail-hero">${escapeHtml(routeSummary)}</p>
+            </div>
+            <div class="detail-section">
+              <div class="detail-grid">
+                <div class="detail-item"><span class="detail-label">Altitude</span><span class="detail-value">${altitudeMeters!==null?`${escapeHtml(formatNumber(altitudeMeters))} m`:"Unknown"}</span></div>
+                <div class="detail-item"><span class="detail-label">Speed</span><span class="detail-value">${speedKmh!==null?`${escapeHtml(formatNumber(speedKmh))} km/h`:"Unknown"}</span></div>
+                <div class="detail-item"><span class="detail-label">Course</span><span class="detail-value">${escapeHtml(`${Math.round(item.track)}°`)}</span></div>
+              </div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-grid secondary">
+                <div class="detail-item"><span class="detail-label">To destination</span><span class="detail-value">${escapeHtml(distanceToDestination)}</span></div>
+                <div class="detail-item"><span class="detail-label">From HQ</span><span class="detail-value">${escapeHtml(distanceFromHQ)}</span></div>
+              </div>
+              <p class="detail-caption">${escapeHtml(flightPhase)}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>`;
+  }).join("")
+}
+
+function bindAircraftToggles(){document.querySelectorAll("[data-aircraft-toggle]").forEach(b=>b.addEventListener("click",()=>{const icao=b.dataset.aircraftToggle;state.openAircraftIcao=state.openAircraftIcao===icao?null:icao;render()}))}
+function renderTail(url,code){return url?`<span class="tail"><img src="${escapeHtml(url)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" /><span class="tail-fallback" style="display:none">${escapeHtml(code||"AIR")}</span></span>`:`<span class="tail"><span class="tail-fallback">AIR</span></span>`}
+function expandAircraftType(code){const map={A318:"Airbus A318-100",A319:"Airbus A319-100",A320:"Airbus A320-200",A321:"Airbus A321-100/200",A20N:"Airbus A320neo",A21N:"Airbus A321neo",A332:"Airbus A330-200",A333:"Airbus A330-300",A339:"Airbus A330-900neo",A359:"Airbus A350-900",A35K:"Airbus A350-1000",A388:"Airbus A380-800",B737:"Boeing 737-700",B738:"Boeing 737-800",B739:"Boeing 737-900",B38M:"Boeing 737 MAX 8",B39M:"Boeing 737 MAX 9",B744:"Boeing 747-400",B748:"Boeing 747-8",B752:"Boeing 757-200",B763:"Boeing 767-300",B772:"Boeing 777-200",B773:"Boeing 777-300",B77W:"Boeing 777-300ER",B788:"Boeing 787-8",B789:"Boeing 787-9",B78X:"Boeing 787-10",E190:"Embraer 190",E195:"Embraer 195",E290:"Embraer E190-E2",E295:"Embraer E195-E2",CRJ9:"Bombardier CRJ900",AT76:"ATR 72-600",DH8D:"De Havilland Dash 8-Q400"};const normalized=String(code||"").trim().toUpperCase();return map[normalized]||normalized||"Unknown aircraft"}
+function deriveFlightPhase(altitudeMeters,verticalRateFpm,remainingDistanceKm){if(remainingDistanceKm!==null&&remainingDistanceKm<80&&altitudeMeters!==null&&altitudeMeters<3500)return"APPROACH";if(verticalRateFpm!==null){if(verticalRateFpm>500)return"CLIMB";if(verticalRateFpm<-500)return"DESCENT"}return"CRUISE"}
+function computeRemainingDistanceKm(aircraft,route){const destinationLat=numericOrNull(extractFirst(route?.destination?.latitude,route?.destination?.lat,route?.destination?.location?.lat,route?.arrival?.latitude,route?.arrival?.lat));const destinationLon=numericOrNull(extractFirst(route?.destination?.longitude,route?.destination?.lon,route?.destination?.lng,route?.destination?.location?.lon,route?.destination?.location?.lng,route?.arrival?.longitude,route?.arrival?.lon,route?.arrival?.lng));if(destinationLat===null||destinationLon===null)return null;return haversineKm(aircraft,{lat:destinationLat,lon:destinationLon})}
+function cityOnly(value){if(!value)return null;const text=String(value).trim().replace(/\s+International Airport$/i,"").replace(/\s+Airport$/i,"").replace(/\s+International$/i,"").trim();return text.includes(",")?text.split(",")[0].trim():text}
+function airlineIcaoFromCallsign(c){const m=String(c||"").trim().toUpperCase().match(/^([A-Z]{3})\d/);return m?m[1]:null}
+function toUpperText(value){return value?String(value).toUpperCase():null}
+function extractFirst(...values){for(const value of values){if(value!==undefined&&value!==null&&String(value).trim()!=="")return value}return null}
+function shortLabel(i){return(i.callsign||i.registration||i.type||i.icao).slice(0,7)}
+function cleanText(v){const t=String(v??"").trim().toUpperCase();return t||null}
+function numericOrNull(v){const n=Number(v);return Number.isFinite(n)?n:null}
+function normalizeHeading(v){const n=Number(v);return Number.isFinite(n)?((n%360)+360)%360:0}
+function haversineKm(a,b){const R=6371.0088,dLat=radians(b.lat-a.lat),dLon=radians(b.lon-a.lon),la=radians(a.lat),lb=radians(b.lat),h=Math.sin(dLat/2)**2+Math.cos(la)*Math.cos(lb)*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function bearing(a,b){const la=radians(a.lat),lb=radians(b.lat),d=radians(b.lon-a.lon),y=Math.sin(d)*Math.cos(lb),x=Math.cos(la)*Math.sin(lb)-Math.sin(la)*Math.cos(lb)*Math.cos(d);return(Math.atan2(y,x)*180/Math.PI+360)%360}
+function radians(v){return v*Math.PI/180}
+function formatNumber(v){return Math.round(v).toLocaleString("en-US")}
+function svgEl(n,a){const e=document.createElementNS("http://www.w3.org/2000/svg",n);Object.entries(a).forEach(([k,v])=>e.setAttribute(k,String(v)));return e}
+function escapeHtml(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+
+locationToggle.addEventListener("click",()=>{const isOpen=addressPanel.classList.toggle("open");locationToggle.setAttribute("aria-expanded",String(isOpen));if(isOpen)addressInput.focus()});
+addressForm.addEventListener("submit",async e=>{e.preventDefault();const address=addressInput.value.trim();if(!address){addressMessage.textContent="Enter an address.";return}addressMessage.textContent="Searching…";try{const result=await geocodeAddress(address);if(!result){addressMessage.textContent="Address not found.";return}setLocation(result.lat,result.lon,address);addressInput.value="";addressPanel.classList.remove("open");locationToggle.setAttribute("aria-expanded","false")}catch(err){console.error(err);addressMessage.textContent="Address lookup is currently unavailable."}});
+
+restoreLocation();loadAircraft();setInterval(loadAircraft,REFRESH_INTERVAL_MS);
+</script>
+</body>
+</html>

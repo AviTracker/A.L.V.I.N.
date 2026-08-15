@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f2f3f1" />
+  <title>A.L.V.I.N. Poster</title>
+
+  <style>
+    :root {
+      --page: #eceeeb;
+      --poster: #f8f8f6;
+      --text: #183032;
+      --muted: #707873;
+      --line: #d9ddda;
+      --success: #6ba34a;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--page);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      padding: 18px 12px 34px;
+    }
+
+    .page {
+      width: min(100%, 760px);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .back-link svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #a7ada9;
+    }
+
+    .status.live .status-dot {
+      background: var(--success);
+    }
+
+    .poster-shell {
+      padding: clamp(14px, 3vw, 28px);
+      border-radius: 3px;
+      background: #ffffff;
+      box-shadow: 0 18px 50px rgba(24, 48, 50, 0.10);
+    }
+
+    .poster {
+      position: relative;
+      padding: clamp(28px, 6vw, 56px);
+      padding-bottom: clamp(100px, 11vw, 124px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(rgba(24, 48, 50, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 48, 50, 0.018) 1px, transparent 1px),
+        var(--poster);
+      background-size: 18px 18px;
+    }
+
+    .poster-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 44px;
+    }
+
+    .poster-kicker {
+      margin: 0 0 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+    }
+
+    .poster-title {
+      margin: 0;
+      font-size: clamp(28px, 4.5vw, 46px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 0.96;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .poster-subtitle {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .poster-location {
+      padding-top: 2px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .aircraft-stack {
+      display: grid;
+      gap: 44px;
+    }
+
+    .aircraft-entry {
+      display: grid;
+      grid-template-columns: minmax(210px, 300px) minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+    }
+
+    .aircraft-entry.right {
+      grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);
+    }
+
+    .tail-box {
+      display: grid;
+      align-items: center;
+      min-height: 196px;
+    }
+
+    .aircraft-entry.left .tail-box {
+      justify-items: start;
+    }
+
+    .aircraft-entry.right .tail-box {
+      justify-items: end;
+      order: 2;
+    }
+
+    .aircraft-entry.right .aircraft-copy {
+      order: 1;
+      text-align: right;
+    }
+
+    .tail-box img {
+      display: block;
+      width: 100%;
+      max-width: 292px;
+      max-height: 182px;
+      object-fit: contain;
+    }
+
+    .tail-fallback {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+
+    .aircraft-headline {
+      margin: 0 0 10px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: clamp(22px, 3.8vw, 34px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.02;
+    }
+
+    .aircraft-meta {
+      display: grid;
+      gap: 4px;
+    }
+
+    .aircraft-line {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .aircraft-line strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .poster-footer {
+      position: absolute;
+      right: clamp(28px, 6vw, 56px);
+      bottom: clamp(22px, 4vw, 34px);
+      left: clamp(28px, 6vw, 56px);
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .empty {
+      padding: 80px 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 620px) {
+      .poster {
+        padding-bottom: 92px;
+      }
+
+      .poster-header {
+        margin-bottom: 34px;
+      }
+
+      .aircraft-stack {
+        gap: 34px;
+      }
+
+      .aircraft-entry,
+      .aircraft-entry.right {
+        grid-template-columns: 128px minmax(0, 1fr);
+        gap: 12px;
+      }
+
+      .aircraft-entry.right .tail-box {
+        order: 2;
+      }
+
+      .aircraft-entry.right .aircraft-copy {
+        order: 1;
+      }
+
+      .tail-box {
+        min-height: 120px;
+      }
+
+      .tail-box img {
+        max-width: 124px;
+        max-height: 112px;
+      }
+
+      .aircraft-line {
+        font-size: 11px;
+      }
+
+      .poster-footer {
+        font-size: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <div class="topbar">
+      <a class="back-link" href="index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"></path>
+        </svg>
+        <span>Back to A.L.V.I.N.</span>
+      </a>
+
+      <div class="status" id="status">
+        <span class="status-dot"></span>
+        <span id="statusText">Connecting</span>
+      </div>
+    </div>
+
+    <div class="poster-shell">
+      <section class="poster">
+        <header class="poster-header">
+          <div>
+            <p class="poster-kicker">A.L.V.I.N.</p>
+            <h1 class="poster-title">Flight Poster</h1>
+            <p class="poster-subtitle">Airborne aircraft near HQ with route and destination data</p>
+          </div>
+
+          <div class="poster-location">HQ</div>
+        </header>
+
+        <div class="aircraft-stack" id="aircraftStack">
+          <div class="empty">Loading aircraft…</div>
+        </div>
+
+        <footer class="poster-footer">
+          <span id="footerLocation">HQ</span>
+          <span id="footerTime">Live airspace portrait</span>
+        </footer>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const API_BASE =
+      "https://aviradar-api.marvinradar.workers.dev";
+
+    const LOCATION = {
+      lat: 48.1547,
+      lon: 11.5074,
+      label: "HQ",
+    };
+
+    const MAX_AIRCRAFT = 4;
+    const REFRESH_INTERVAL_MS = 120000;
+
+    const state = {
+      aircraft: [],
+    };
+
+    const statusElement =
+      document.getElementById("status");
+
+    const statusTextElement =
+      document.getElementById("statusText");
+
+    const aircraftStack =
+      document.getElementById("aircraftStack");
+
+    const footerTime =
+      document.getElementById("footerTime");
+
+    function setStatus(live, text) {
+      statusElement.classList.toggle("live", live);
+      statusTextElement.textContent = text;
+    }
+
+    async function loadAircraft() {
+      try {
+        setStatus(false, "Updating");
+
+        const response =
+          await fetch(
+            `${API_BASE}/aircraft`,
+            {
+              headers: { Accept: "application/json" },
+              cache: "no-store",
+            }
+          );
+
+        if (!response.ok) {
+          throw new Error(
+            `Aircraft request failed with HTTP ${response.status}`
+          );
+        }
+
+        const payload =
+          await response.json();
+
+        const rawAircraft =
+          Array.isArray(payload.ac)
+            ? payload.ac
+            : [];
+
+        const nearestAirborne =
+          rawAircraft
+            .map(normalizeAircraft)
+            .filter(Boolean)
+            .filter(
+              (aircraft) =>
+                aircraft.altitude !== 0 &&
+                aircraft.callsign
+            )
+            .map(
+              (aircraft) => ({
+                ...aircraft,
+                distanceKm:
+                  haversineKm(
+                    LOCATION,
+                    aircraft
+                  ),
+                bearingDeg:
+                  bearing(
+                    LOCATION,
+                    aircraft
+                  ),
+              })
+            )
+            .sort(
+              (a, b) =>
+                a.distanceKm -
+                b.distanceKm
+            )
+            .slice(0, 12);
+
+        const withRoute =
+          await Promise.all(
+            nearestAirborne.map(
+              enrichAircraftWithRoute
+            )
+          );
+
+        state.aircraft =
+          withRoute
+            .filter(
+              (aircraft) =>
+                aircraft &&
+                aircraft.destinationCity
+            )
+            .sort(
+              (a, b) =>
+                a.distanceKm -
+                b.distanceKm
+            )
+            .slice(
+              0,
+              MAX_AIRCRAFT
+            );
+
+        renderPoster();
+        setStatus(true, "Live");
+
+        footerTime.textContent =
+          new Date().toLocaleString(
+            "en-GB",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          );
+      } catch (error) {
+        console.error(error);
+        setStatus(false, "Unavailable");
+
+        if (!state.aircraft.length) {
+          aircraftStack.innerHTML =
+            '<div class="empty">Aircraft data unavailable.</div>';
+        }
+      }
+    }
+
+    function normalizeAircraft(raw) {
+      const lat = Number(raw.lat);
+      const lon = Number(raw.lon);
+
+      if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lon)
+      ) {
+        return null;
+      }
+
+      const callsign =
+        cleanText(raw.flight);
+
+      const registration =
+        cleanText(raw.r);
+
+      const type =
+        cleanText(raw.t);
+
+      const operator =
+        cleanText(raw.ownOp) ||
+        airlineNameFromCallsign(callsign) ||
+        registration ||
+        type ||
+        "Unknown aircraft";
+
+      const altitude =
+        raw.alt_baro === "ground"
+          ? 0
+          : numericOrNull(
+              raw.alt_baro ??
+              raw.alt_geom
+            );
+
+      return {
+        lat,
+        lon,
+        callsign,
+        registration,
+        type,
+        operator,
+        altitude,
+        speed:
+          numericOrNull(raw.gs),
+        track:
+          normalizeHeading(
+            raw.track ??
+            raw.true_heading ??
+            raw.mag_heading
+          ),
+      };
+    }
+
+    async function enrichAircraftWithRoute(aircraft) {
+      if (!aircraft.callsign) {
+        return aircraft;
+      }
+
+      try {
+        const response =
+          await fetch(
+            `${API_BASE}/route?callsign=${encodeURIComponent(aircraft.callsign)}`,
+            {
+              headers: { Accept: "application/json" },
+              cache: "no-store",
+            }
+          );
+
+        if (!response.ok) {
+          return aircraft;
+        }
+
+        const data =
+          await response.json();
+
+        const route =
+          data?.route || null;
+
+        if (!route) {
+          return aircraft;
+        }
+
+        const destinationCity =
+          cityOnly(
+            extractFirst(
+              route?.destination?.municipality,
+              route?.arrival?.municipality,
+              route?.destination?.name,
+              route?.arrival?.name
+            )
+          );
+
+        const originCity =
+          cityOnly(
+            extractFirst(
+              route?.origin?.municipality,
+              route?.departure?.municipality,
+              route?.origin?.name,
+              route?.departure?.name
+            )
+          );
+
+        const destinationCode =
+          extractFirst(
+            route?.destination?.iata_code,
+            route?.destination?.icao_code,
+            route?.arrival?.iata_code,
+            route?.arrival?.icao_code
+          );
+
+        const airline =
+          extractFirst(
+            route?.airline?.name,
+            route?.airline?.icao,
+            route?.airline?.iata,
+            aircraft.operator
+          );
+
+        const iataFlight =
+          buildIataFlightNumber(
+            aircraft.callsign,
+            route?.airline?.iata
+          );
+
+        const distanceRemainingKm =
+          computeRemainingDistanceKm(
+            aircraft,
+            route
+          );
+
+        const etaText =
+          computeEtaText(
+            route,
+            aircraft
+          );
+
+        const timeRemainingText =
+          computeTimeRemainingText(
+            aircraft,
+            distanceRemainingKm
+          );
+
+        return {
+          ...aircraft,
+          operator:
+            airline || aircraft.operator,
+          destinationCity,
+          destinationCode,
+          originCity,
+          iataFlight,
+          distanceRemainingKm,
+          etaText,
+          timeRemainingText,
+          route,
+        };
+      } catch (error) {
+        console.error(error);
+        return aircraft;
+      }
+    }
+
+    function renderPoster() {
+      if (!state.aircraft.length) {
+        aircraftStack.innerHTML =
+          '<div class="empty">No airborne aircraft with route data nearby.</div>';
+        return;
+      }
+
+      aircraftStack.innerHTML =
+        state.aircraft
+          .map(
+            (aircraft, index) => {
+              const airlineIcao =
+                airlineIcaoFromCallsign(
+                  aircraft.callsign
+                );
+
+              const tailUrl =
+                airlineIcao
+                  ? (
+                      `${API_BASE}/airline-logo` +
+                      `?icao=${encodeURIComponent(
+                        airlineIcao
+                      )}` +
+                      "&variant=tail"
+                    )
+                  : null;
+
+              const altitude =
+                aircraft.altitude !== null
+                  ? `${formatNumber(
+                      aircraft.altitude
+                    )} ft`
+                  : "Altitude unknown";
+
+              const speed =
+                aircraft.speed !== null
+                  ? `${Math.round(
+                      aircraft.speed
+                    )} kt`
+                  : "Speed unknown";
+
+              const heading =
+                `${Math.round(
+                  aircraft.track
+                )}°`;
+
+              const alignmentClass =
+                index % 2 === 0
+                  ? "left"
+                  : "right";
+
+              const fullType =
+                expandAircraftType(
+                  aircraft.type
+                );
+
+              const headline =
+                `${fullType} to ${aircraft.destinationCity}`;
+
+              const routeLine =
+                [
+                  aircraft.originCity
+                    ? `From ${aircraft.originCity}`
+                    : null,
+                  aircraft.destinationCity
+                    ? `To ${aircraft.destinationCity}`
+                    : null,
+                  aircraft.etaText
+                    ? `Arrives around ${aircraft.etaText}`
+                    : null,
+                  aircraft.timeRemainingText
+                    ? `${aircraft.timeRemainingText} remaining`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
+
+              const flightLine =
+                [
+                  aircraft.operator || "Unknown operator",
+                  aircraft.iataFlight || null,
+                  aircraft.callsign || null,
+                  aircraft.registration || null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
+
+              const movementLine =
+                [
+                  aircraft.distanceRemainingKm !== null
+                    ? `${Math.round(aircraft.distanceRemainingKm)} km remaining`
+                    : null,
+                  altitude,
+                  speed,
+                  `heading ${heading}`,
+                ]
+                  .filter(Boolean)
+                  .join(" · ");
+
+              return `
+                <article class="aircraft-entry ${alignmentClass}">
+                  <div class="tail-box">
+                    ${
+                      tailUrl
+                        ? `
+                          <img
+                            src="${escapeHtml(tailUrl)}"
+                            alt=""
+                            loading="lazy"
+                            onerror="
+                              this.style.display='none';
+                              this.nextElementSibling.style.display='block';
+                            "
+                          />
+                          <span class="tail-fallback" style="display:none">
+                            ${escapeHtml(
+                              airlineIcao || "AIR"
+                            )}
+                          </span>
+                        `
+                        : `
+                          <span class="tail-fallback">AIR</span>
+                        `
+                    }
+                  </div>
+
+                  <div class="aircraft-copy">
+                    <h2 class="aircraft-headline">
+                      ${escapeHtml(headline)}
+                    </h2>
+
+                    <div class="aircraft-meta">
+                      <p class="aircraft-line">
+                        <strong>${escapeHtml(flightLine)}</strong>
+                      </p>
+
+                      <p class="aircraft-line">
+                        ${escapeHtml(routeLine)}
+                      </p>
+
+                      <p class="aircraft-line">
+                        ${escapeHtml(movementLine)}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              `;
+            }
+          )
+          .join("");
+    }
+
+    function expandAircraftType(code) {
+      const map = {
+        A318: "Airbus A318-100",
+        A319: "Airbus A319-100",
+        A320: "Airbus A320-200",
+        A321: "Airbus A321-100/200",
+        A20N: "Airbus A320neo",
+        A21N: "Airbus A321neo",
+        A359: "Airbus A350-900",
+        A35K: "Airbus A350-1000",
+        A388: "Airbus A380-800",
+        A333: "Airbus A330-300",
+        A332: "Airbus A330-200",
+        A339: "Airbus A330-900neo",
+        B736: "Boeing 737-600",
+        B737: "Boeing 737-700",
+        B738: "Boeing 737-800",
+        B739: "Boeing 737-900",
+        B38M: "Boeing 737 MAX 8",
+        B39M: "Boeing 737 MAX 9",
+        B744: "Boeing 747-400",
+        B748: "Boeing 747-8",
+        B752: "Boeing 757-200",
+        B763: "Boeing 767-300",
+        B772: "Boeing 777-200",
+        B773: "Boeing 777-300",
+        B77W: "Boeing 777-300ER",
+        B788: "Boeing 787-8",
+        B789: "Boeing 787-9",
+        B78X: "Boeing 787-10",
+        E190: "Embraer 190",
+        E195: "Embraer 195",
+        E290: "Embraer E190-E2",
+        E295: "Embraer E195-E2",
+        CRJ9: "Bombardier CRJ900",
+        CRJX: "Bombardier CRJ1000",
+        AT76: "ATR 72-600",
+        DH8D: "De Havilland Dash 8-Q400",
+      };
+
+      const normalized =
+        String(code || "")
+          .trim()
+          .toUpperCase();
+
+      return map[normalized] || normalized || "Unknown aircraft";
+    }
+
+    function computeRemainingDistanceKm(aircraft, route) {
+      const destLat =
+        numericOrNull(
+          extractFirst(
+            route?.destination?.latitude,
+            route?.destination?.lat,
+            route?.destination?.location?.lat,
+            route?.arrival?.latitude,
+            route?.arrival?.lat
+          )
+        );
+
+      const destLon =
+        numericOrNull(
+          extractFirst(
+            route?.destination?.longitude,
+            route?.destination?.lon,
+            route?.destination?.lng,
+            route?.destination?.location?.lon,
+            route?.destination?.location?.lng,
+            route?.arrival?.longitude,
+            route?.arrival?.lon,
+            route?.arrival?.lng
+          )
+        );
+
+      if (
+        destLat === null ||
+        destLon === null
+      ) {
+        return null;
+      }
+
+      return haversineKm(
+        {
+          lat: aircraft.lat,
+          lon: aircraft.lon,
+        },
+        {
+          lat: destLat,
+          lon: destLon,
+        }
+      );
+    }
+
+    function computeEtaText(route, aircraft) {
+      const directEta =
+        extractFirst(
+          route?.eta,
+          route?.estimated_arrival,
+          route?.estimatedArrival,
+          route?.arrival_time,
+          route?.arrivalTime,
+          route?.destination?.estimated_arrival,
+          route?.destination?.arrival_time
+        );
+
+      if (directEta) {
+        return formatEta(
+          directEta
+        );
+      }
+
+      const distanceRemainingKm =
+        computeRemainingDistanceKm(
+          aircraft,
+          route
+        );
+
+      if (
+        distanceRemainingKm !== null &&
+        aircraft.speed &&
+        aircraft.speed > 80
+      ) {
+        const distanceNm =
+          distanceRemainingKm / 1.852;
+
+        const hours =
+          distanceNm / aircraft.speed;
+
+        if (
+          Number.isFinite(hours) &&
+          hours > 0 &&
+          hours < 24
+        ) {
+          const arrival =
+            new Date(
+              Date.now() +
+              hours * 60 * 60 * 1000
+            );
+
+          return arrival.toLocaleString(
+            "en-GB",
+            {
+              day: "2-digit",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          );
+        }
+      }
+
+      return null;
+    }
+
+    function computeTimeRemainingText(aircraft, distanceRemainingKm) {
+      if (
+        distanceRemainingKm === null ||
+        aircraft.speed === null ||
+        aircraft.speed <= 80
+      ) {
+        return null;
+      }
+
+      const distanceNm =
+        distanceRemainingKm / 1.852;
+
+      const totalMinutes =
+        Math.round(
+          (distanceNm / aircraft.speed) *
+          60
+        );
+
+      if (
+        !Number.isFinite(totalMinutes) ||
+        totalMinutes <= 0
+      ) {
+        return null;
+      }
+
+      const hours =
+        Math.floor(
+          totalMinutes / 60
+        );
+
+      const minutes =
+        totalMinutes % 60;
+
+      if (hours > 0) {
+        return `${hours}h ${minutes}m`;
+      }
+
+      return `${minutes}m`;
+    }
+
+    function buildIataFlightNumber(callsign, airlineIata) {
+      const normalizedCallsign =
+        String(callsign || "")
+          .trim()
+          .toUpperCase();
+
+      const digits =
+        normalizedCallsign.replace(
+          /^[A-Z]{3}/,
+          ""
+        );
+
+      if (
+        airlineIata &&
+        digits
+      ) {
+        return `${airlineIata}${digits}`;
+      }
+
+      return null;
+    }
+
+    function cityOnly(value) {
+      if (!value) {
+        return null;
+      }
+
+      const text =
+        String(value)
+          .trim()
+          .replace(/\s+Airport$/i, "")
+          .replace(/\s+International$/i, "")
+          .trim();
+
+      if (text.includes(",")) {
+        return text.split(",")[0].trim();
+      }
+
+      return text;
+    }
+
+    function cleanText(value) {
+      const text =
+        String(value ?? "")
+          .trim()
+          .toUpperCase();
+
+      return text || null;
+    }
+
+    function extractFirst(...values) {
+      for (const value of values) {
+        if (
+          value !== null &&
+          value !== undefined &&
+          String(value).trim() !== ""
+        ) {
+          return String(value).trim();
+        }
+      }
+
+      return null;
+    }
+
+    function airlineIcaoFromCallsign(callsign) {
+      const normalized =
+        String(callsign || "")
+          .trim()
+          .toUpperCase();
+
+      const match =
+        normalized.match(
+          /^([A-Z]{3})\d/
+        );
+
+      return match
+        ? match[1]
+        : null;
+    }
+
+    function airlineNameFromCallsign(callsign) {
+      const icao =
+        airlineIcaoFromCallsign(callsign);
+
+      const map = {
+        DLH: "Lufthansa",
+        BAW: "British Airways",
+        AFR: "Air France",
+        KLM: "KLM",
+        UAE: "Emirates",
+        QTR: "Qatar Airways",
+        THY: "Turkish Airlines",
+        SAS: "Scandinavian Airlines",
+        AUA: "Austrian Airlines",
+        SWR: "Swiss",
+        EIN: "Aer Lingus",
+        VLG: "Vueling",
+        RYR: "Ryanair",
+        EJU: "easyJet Europe",
+        EZY: "easyJet",
+        TUI: "TUI fly",
+      };
+
+      return icao
+        ? (map[icao] || icao)
+        : null;
+    }
+
+    function formatEta(value) {
+      const parsed =
+        new Date(value);
+
+      if (
+        !Number.isNaN(
+          parsed.getTime()
+        )
+      ) {
+        return parsed.toLocaleString(
+          "en-GB",
+          {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        );
+      }
+
+      return String(value);
+    }
+
+    function numericOrNull(value) {
+      const number =
+        Number(value);
+
+      return Number.isFinite(number)
+        ? number
+        : null;
+    }
+
+    function normalizeHeading(value) {
+      const number =
+        Number(value);
+
+      if (!Number.isFinite(number)) {
+        return 0;
+      }
+
+      return (
+        (number % 360) +
+        360
+      ) % 360;
+    }
+
+    function haversineKm(a, b) {
+      const earthRadiusKm =
+        6371.0088;
+
+      const deltaLat =
+        radians(
+          b.lat -
+          a.lat
+        );
+
+      const deltaLon =
+        radians(
+          b.lon -
+          a.lon
+        );
+
+      const latitudeA =
+        radians(a.lat);
+
+      const latitudeB =
+        radians(b.lat);
+
+      const value =
+        Math.sin(
+          deltaLat / 2
+        ) ** 2 +
+        Math.cos(latitudeA) *
+        Math.cos(latitudeB) *
+        Math.sin(
+          deltaLon / 2
+        ) ** 2;
+
+      return 2 *
+        earthRadiusKm *
+        Math.asin(
+          Math.sqrt(value)
+        );
+    }
+
+    function bearing(a, b) {
+      const latitudeA =
+        radians(a.lat);
+
+      const latitudeB =
+        radians(b.lat);
+
+      const deltaLon =
+        radians(
+          b.lon -
+          a.lon
+        );
+
+      const y =
+        Math.sin(deltaLon) *
+        Math.cos(latitudeB);
+
+      const x =
+        Math.cos(latitudeA) *
+        Math.sin(latitudeB) -
+        Math.sin(latitudeA) *
+        Math.cos(latitudeB) *
+        Math.cos(deltaLon);
+
+      return (
+        Math.atan2(y, x) *
+        180 /
+        Math.PI +
+        360
+      ) % 360;
+    }
+
+    function radians(value) {
+      return (
+        value *
+        Math.PI /
+        180
+      );
+    }
+
+    function formatNumber(value) {
+      return Math.round(value)
+        .toLocaleString(
+          "en-US"
+        );
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    loadAircraft();
+    setInterval(
+      loadAircraft,
+      REFRESH_INTERVAL_MS
+    );
+  </script>
+</body>
+</html>
